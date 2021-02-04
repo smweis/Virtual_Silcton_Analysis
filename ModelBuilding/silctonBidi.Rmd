@@ -1,0 +1,14 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+You'll need to install the BiDimRegression package:
+
+#install.packages("BiDimRegression")
+
+
+```{r}
+library(BiDimRegression)
+results <- silctonBidi('./sampleBidiData.csv','modelBuildingTemplate.csv')
+```

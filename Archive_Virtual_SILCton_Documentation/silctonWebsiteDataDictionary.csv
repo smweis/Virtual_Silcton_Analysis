@@ -1,0 +1,36 @@
+variable_name,silcton_tab,plain_text_description
+participant,Spatial Ability and Demographics,Participant ID (human readable)
+Participant UUID,Spatial Ability and Demographics,Participant ID (unique)
+Pilot subject?,Spatial Ability and Demographics,Whether the subject was indicated as pilot or not
+elected to share data?,Spatial Ability and Demographics,Whether the subject indicated they wished to share data
+age,Spatial Ability and Demographics,Age (years)
+sex,Spatial Ability and Demographics,Sex (male or female)
+date,Spatial Ability and Demographics,Date of data collection
+MRT SDT-style,Spatial Ability and Demographics,Average mental rotation test score
+PSAS average,Spatial Ability and Demographics,Average Philadelphia Spatial Ability Scale score
+PVAS average,Spatial Ability and Demographics,Average Philadelphia Verbal Ability Scale score
+SBSOD average,Spatial Ability and Demographics,Average Santa Barbara Sense of Direction score
+gender,Spatial Ability and Demographics,gender
+ethnic category,Spatial Ability and Demographics,Ethnic category
+racial category,Spatial Ability and Demographics,Racial category
+education,Spatial Ability and Demographics,Education level
+handedness,Spatial Ability and Demographics,Handedness
+first language,Spatial Ability and Demographics,First language
+participant,Model,Participant ID (human readable)
+date,Model,Date of data collection
+model number,Model,"If assessment was conducted in multiple sessions, this will number the tests (0 = after routes 1/2, 1 = after first connecting route, 2 = after second connecting route)."
+building,Model,Name of the building associated with values.
+x,Model,"X-coordinate (horizontal) of spatial location of building on map. If X = 0, value is missing."
+y,Model,"Y-coordinate (vertical) of spatial location of building on map. If Y = 0, value is missing."
+error,Model,absolute distance of X-Y coordinates of building to the actual position of the building. 
+participant,Onsite/Offsite Pointing,Participant ID (human readable)
+date,Onsite/Offsite Pointing,Date of data collection
+direction test,Onsite/Offsite Pointing,"If assessment was conducted in multiple sessions, this will number the tests (0 = after routes 1/2, 1 = after first connecting route, 2 = after second connecting route)."
+start landmark,Onsite/Offsite Pointing,Name of the building participant stood at during trial.
+facing landmark,Onsite/Offsite Pointing,"Name of building participant ""faced."" This direction is used to calculate the angle the target building is given."
+target landmark,Onsite/Offsite Pointing,Building participant was asked to point to.
+bearing,Onsite/Offsite Pointing,Angle value participant pointed to (in reference to facing direction vector).
+actual direction,Onsite/Offsite Pointing,"Angle assigned to target building (based on angle away from ""facing building."")"
+abs error,Onsite/Offsite Pointing,Calculated error between bearing and actual direction (see documentation for calcuation details).
+same or different route,Onsite/Offsite Pointing,Whether starting building and target building are on the same or different routes.
+error in pointing task,Onsite/Offsite Pointing,Whether this trial was collected when Virtual Silcton data collection had a bug
