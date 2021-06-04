@@ -3,6 +3,9 @@
 # You'll need to install the BiDimRegression package:
 #install.packages("BiDimRegression")
 
+# Note - this script will NOT calculate any participant's scores who have missing values. 
+# Partial scores should be calculated manually.
+
 silctonBidi <- function(pathToData,pathToTemplate) {
 
   # Take a path to data: ./sampleBidiData.csv
@@ -43,13 +46,18 @@ silctonBidi <- function(pathToData,pathToTemplate) {
       # Select the data to be analyzed
       tempData <- data[c((i-(observations-1)):i),]
       id <- tempData[1,'participant']
+      results[i/observations,'participant'] <- as.character(id)
+      
       tempData <- tempData[,c(8,9)]
+      
+      # If any of the data are null / not recorded, exclude that participant's data.
+      if (any(is.na(tempData))) {next}
+      
       tempData$indepV1 <- templateData$indepV1
       tempData$indepV2 <- templateData$indepV2
       
       temp_results <- BiDimRegression(tempData)
   
-      results[i/observations,'participant'] <- as.character(id)
       results[i/observations,'Overall_r'] <- temp_results$euclidean.r
       results[i/observations,'Overall_rsquared'] <- temp_results$euclidean.rsqr
       results[i/observations,'Overall_angle'] <- temp_results$euclidean.angleDEG
@@ -86,5 +94,7 @@ return(results)
 }
 
 # DEMO:
-# library(BiDimRegression)
-# results <- silctonBidi('./sampleBidiData.csv','modelBuildingTemplate.csv')
+library(BiDimRegression)
+pathToData <- 'C:/Users/smwei/Dropbox (UFL)/Virtual_Ambler/Fixing_Silcton/OSF/RawData/UF_Temple_VirtualSilcton_ModelBuilding.csv'
+pathToTemplate <- 'C:/Users/smwei/Dropbox (UFL)/Virtual_Ambler/Virtual_SILCton/Virtual_Silcton_Analysis_Code/ModelBuilding/modelBuildingTemplate.csv'
+results <- silctonBidi(pathToData,pathToTemplate)
