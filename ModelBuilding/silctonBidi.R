@@ -48,7 +48,7 @@ silctonBidi <- function(pathToData,pathToTemplate) {
       id <- tempData[1,'participant']
       results[i/observations,'participant'] <- as.character(id)
       
-      tempData <- tempData[,c(8,9)]
+      tempData <- tempData[,c('depV1','depV2')]
       
       # If any of the data are null / not recorded, exclude that participant's data.
       if (any(is.na(tempData))) {next}
@@ -95,6 +95,6 @@ return(results)
 
 # DEMO:
 library(BiDimRegression)
-pathToData <- 'C:/Users/smwei/Dropbox (UFL)/Virtual_Ambler/Fixing_Silcton/OSF/RawData/UF_Temple_VirtualSilcton_ModelBuilding.csv'
+pathToData <- 'C:/Users/smwei/Dropbox (UFL)/Virtual_Ambler/Fixing_Silcton/OSF/RawData/AU_VirtualSilcton_ModelBuilding_Raw.csv'
 pathToTemplate <- 'C:/Users/smwei/Dropbox (UFL)/Virtual_Ambler/Virtual_SILCton/Virtual_Silcton_Analysis_Code/ModelBuilding/modelBuildingTemplate.csv'
 results <- silctonBidi(pathToData,pathToTemplate)
