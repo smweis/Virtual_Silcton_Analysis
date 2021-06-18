@@ -53,7 +53,7 @@ data = {'Batty House': [0,63,-292,91,-309],
         'Sauer Center':[6,683,-69,687,-141],
         'Tobler Museum':[7,536,-189,536,-197]}
 
-pd.DataFrame.from_dict(data, orient='index',
+landmarks_df = pd.DataFrame.from_dict(data, orient='index',
                        columns=['visit_order',
                        'front_door_pixel_x',
                        'front_door_pixel_y',
