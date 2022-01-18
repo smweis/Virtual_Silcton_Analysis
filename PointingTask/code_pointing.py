@@ -241,10 +241,10 @@ def code_pointing(data_dir, output_dir, incorrect_angles=False, validate=False):
 if __name__ == "__main__":
     import sys
     
-    if sys.argv[3]:
+    if len(sys.argv) > 2:
         incorrect_angles = sys.argv[3].lower() == 'true'
-    
-    if sys.argv[4]:
+
+    if len(sys.argv) > 3:
         validate = sys.argv[4].lower() == 'true'
     
     df = code_pointing(sys.argv[1],sys.argv[2],incorrect_angles,validate)
