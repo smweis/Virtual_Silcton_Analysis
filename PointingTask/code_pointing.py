@@ -15,9 +15,9 @@ this script as a command line argument.
 
 All you need to do is pass arguments to point to your data_directory and the output directory. 
 
-Optionally, you can pass 'true' as a third argument if you would also like to return the buggy scoring. 
+python code_pointing.py -i 'input directory' -o 'output directory'
 
-python code_pointing.py [data_directory] [output_directory]
+python code_pointing.py -h for help
 
 """
 import datetime
@@ -157,7 +157,7 @@ def recalculate_answers(landmarks_df):
 
 
 
-def code_pointing(data_dir, output_dir, incorrect_angles=False, validate=False):
+def code_pointing(data_dir, output_dir, incorrect_angles=False, validate=False, verbose=False):
     
     
     # If we are validating, it is excpected this file is in the original git repository.
@@ -186,66 +186,73 @@ def code_pointing(data_dir, output_dir, incorrect_angles=False, validate=False):
                 participant_id = pd.read_csv(data_files[i],nrows=2)
                 participant_id = participant_id.iloc[1,0].split(' ')[-1]
                 df['participant'] = participant_id
-                print('Success!')
-                print('Header lines expected. Skipped 5 lines.')
+                if verbose:    
+                    print('Success!')
+                    print('Header lines expected. Skipped 5 lines.')
                 
-        for index,row in participant_data.iterrows():
-            point_from = row['pointingDiamondIndex']
-            point_to = row['targetBuildingIndex']
-            
-            if point_from in batty_buildings and point_to in batty_buildings:
-                df.loc[(point_from,point_to),'within_between'] = 'within_a'
-            elif point_from in golledge_buildings and point_to in golledge_buildings:
-                df.loc[(point_from,point_to),'within_between'] = 'within_b'
-            else:
-                df.loc[(point_from,point_to),'within_between'] = 'between'
+            for index,row in participant_data.iterrows():
+                point_from = row['pointingDiamondIndex']
+                point_to = row['targetBuildingIndex']
                 
-            df.loc[(point_from,point_to),'participant_response'] = row['pointingAngle']
-            df.loc[(point_from,point_to),'point_order'] = index
-        
-        
-        # Calculate correct absolute error
-        df['correct_absolute_error'] = [good_pointing_calculation(x,y) 
-                                        for x, y in zip(df['actual_direction'], 
-                                                        df['participant_response'])]
-        
-        columns = ['participant','start_landmark',
-                   'target_landmark','point_order',
-                   'participant_response','actual_direction',
-                   'correct_absolute_error','within_between']
-
-        
-        # Calculate INCORRECT absolute error (if user wants it)
-        if incorrect_angles:
-            df['do_not_use_incorrect_absolute_error'] = [bad_pointing_calculation(x,y) 
-                                                         for x, y in zip(df['unsigned_actual_direction'],
-                                                                         df['participant_response'])]
-            columns.append('do_not_use_incorrect_absolute_error')
+                if point_from in batty_buildings and point_to in batty_buildings:
+                    df.loc[(point_from,point_to),'within_between'] = 'within_a'
+                elif point_from in golledge_buildings and point_to in golledge_buildings:
+                    df.loc[(point_from,point_to),'within_between'] = 'within_b'
+                else:
+                    df.loc[(point_from,point_to),'within_between'] = 'between'
+                    
+                df.loc[(point_from,point_to),'participant_response'] = row['pointingAngle']
+                df.loc[(point_from,point_to),'point_order'] = index
             
-        # Save output
-        to_save_name = output_dir+os.path.sep+'standalone_pointing_' + participant_id + '.csv'
+            
+            # Calculate correct absolute error
+            df['correct_absolute_error'] = [good_pointing_calculation(x,y) 
+                                            for x, y in zip(df['actual_direction'], 
+                                                            df['participant_response'])]
+            
+            columns = ['participant','start_landmark',
+                       'target_landmark','point_order',
+                       'participant_response','actual_direction',
+                       'correct_absolute_error','within_between']
     
-        if os.path.isfile(to_save_name):
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
-            to_save_name = output_dir+os.path.sep+'standalone_pointing_output_'+ participant_id +'_'+timestamp+'.csv'
             
+            # Calculate INCORRECT absolute error (if user wants it)
+            if incorrect_angles:
+                df['do_not_use_incorrect_absolute_error'] = [bad_pointing_calculation(x,y) 
+                                                             for x, y in zip(df['unsigned_actual_direction'],
+                                                                             df['participant_response'])]
+                columns.append('do_not_use_incorrect_absolute_error')
+                
+            # Save output
+            to_save_name = output_dir+os.path.sep+'standalone_pointing_' + participant_id + '.csv'
         
-        # Reorder and clean up
-        df.reset_index(inplace=True)
-        df = df[columns]
-        
-        df.to_csv(to_save_name,index=False)
-        
-        return df
+            if os.path.isfile(to_save_name):
+                timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
+                to_save_name = output_dir+os.path.sep+'standalone_pointing_output_'+ participant_id +'_'+timestamp+'.csv'
+                
+            
+            # Reorder and clean up
+            df.reset_index(inplace=True)
+            df = df[columns]
+            
+            df.to_csv(to_save_name,index=False)
+            
 
 if __name__ == "__main__":
-    import sys
+    import argparse
     
-    if len(sys.argv) > 2:
-        incorrect_angles = sys.argv[3].lower() == 'true'
+    parser = argparse.ArgumentParser(description='Compute pointing errors from raw input.')
+    parser.add_argument('-i','--input',help='Data directory for input',required=True)
+    parser.add_argument('-o','--output',help='Output directory to save results',required=True)
+    parser.add_argument('-b','--buggy', help='Save the buggy angles', required=False,action='store_true')
+    parser.add_argument('-v','--val', help='Perform validation', required=False,action='store_true')
+    parser.add_argument('-d','--debug', help='Print debug logs', required=False,action='store_true')
 
-    if len(sys.argv) > 3:
-        validate = sys.argv[4].lower() == 'true'
+    parser.set_defaults(buggy=False, val=False)
     
-    df = code_pointing(sys.argv[1],sys.argv[2],incorrect_angles,validate)
+    args = vars(parser.parse_args())
+    
+    
+    
+    df = code_pointing(args['input'],args['output'],args['buggy'],args['val'],args['debug'])
     
