@@ -187,7 +187,7 @@ def code_pointing(data_dir, output_dir, incorrect_angles=False, validate=False):
                 participant_id = participant_id.iloc[1,0].split(' ')[-1]
                 df['participant'] = participant_id
                 print('Success!')
-                print('Header lines expected. Skipped 2 lines.')
+                print('Header lines expected. Skipped 5 lines.')
                 
         for index,row in participant_data.iterrows():
             point_from = row['pointingDiamondIndex']
@@ -241,8 +241,11 @@ def code_pointing(data_dir, output_dir, incorrect_angles=False, validate=False):
 if __name__ == "__main__":
     import sys
     
-    incorrect_angles = sys.argv[3].lower() == 'true'
-    validate = sys.argv[4].lower() == 'true'
+    if sys.argv[3]:
+        incorrect_angles = sys.argv[3].lower() == 'true'
+    
+    if sys.argv[4]:
+        validate = sys.argv[4].lower() == 'true'
     
     df = code_pointing(sys.argv[1],sys.argv[2],incorrect_angles,validate)
     
