@@ -165,7 +165,7 @@ def code_pointing(data_dir, output_dir, incorrect_angles=False, validate=False, 
         data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),'validation')
         output_dir = data_dir
     
-        
+    os.makedirs(output_dir,exist_ok=True)
         
     # Get list of data file names
     data_files = get_files(data_dir)
@@ -185,7 +185,7 @@ def code_pointing(data_dir, output_dir, incorrect_angles=False, validate=False, 
                 # Get participant ID
                 participant_id = pd.read_csv(data_files[i],nrows=2)
                 participant_id = participant_id.iloc[1,0].split(' ')[-1]
-                df['participant'] = participant_id
+                
                 if verbose:    
                     print('Success!')
                     print('Header lines expected. Skipped 5 lines.')
@@ -198,8 +198,10 @@ def code_pointing(data_dir, output_dir, incorrect_angles=False, validate=False, 
                     df.loc[(point_from,point_to),'within_between'] = 'within_a'
                 elif point_from in golledge_buildings and point_to in golledge_buildings:
                     df.loc[(point_from,point_to),'within_between'] = 'within_b'
-                else:
+                elif point_from in golledge_buildings + batty_buildings and point_to in golledge_buildings + batty_buildings:
                     df.loc[(point_from,point_to),'within_between'] = 'between'
+                else:
+                    df.loc[(point_from,point_to),'within_between'] = 'other'
                     
                 df.loc[(point_from,point_to),'participant_response'] = row['pointingAngle']
                 df.loc[(point_from,point_to),'point_order'] = index
@@ -233,6 +235,7 @@ def code_pointing(data_dir, output_dir, incorrect_angles=False, validate=False, 
             
             # Reorder and clean up
             df.reset_index(inplace=True)
+            df['participant'] = participant_id
             df = df[columns]
             
             df.to_csv(to_save_name,index=False)
