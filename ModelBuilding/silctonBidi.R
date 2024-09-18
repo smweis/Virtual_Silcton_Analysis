@@ -51,7 +51,11 @@ silctonBidi <- function(pathToData,pathToTemplate) {
       tempData <- tempData[,c('depV1','depV2')]
       
       # If any of the data are null / not recorded, exclude that participant's data.
-      if (any(is.na(tempData))) {next}
+      if (any(is.na(tempData))) {
+        message <- sprintf("Missing values found in participant %s. They will be excluded from the analysis.", as.character(id))
+        warning(message)
+        next
+      }
       
       tempData$indepV1 <- templateData$indepV1
       tempData$indepV2 <- templateData$indepV2
